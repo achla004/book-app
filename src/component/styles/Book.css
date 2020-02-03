@@ -23,20 +23,34 @@
 }
 
 .search {
-  margin-top: 30px;
+  padding-top: 10px;
+  width: 100%;
+  position: relative;
+  display: flex;
 }
 
 .searchbox {
-  background: url("Search.svg") no-repeat;
-  background-position: 5px;
-  box-shadow: 0px 2px 5px 0px rgb(211, 209, 238, 1);
-  border: none;
-  border-radius: 5px;
-  height: 40px;
+  width: 100%;
+  border: 1px solid #f0f0f6;
+  border-right: none;
+  padding: 5px;
+  height: 36px;
+  margin: 0px;
   outline: none;
-  background-color: #f0f0f6;
+  background: rgb(221, 220, 220);
 }
 
+.searchButton {
+  width: 40px;
+  height: 36px;
+  border: 1px solid #f0f0f6;
+  background: rgb(221, 220, 220);
+  text-align: center;
+  color: #fff;
+  margin: none;
+  cursor: pointer;
+  font-size: 20px;
+}
 .test {
   background: #f0f0f6;
 }
@@ -59,6 +73,11 @@
   background: rgb(221, 220, 220);
   border-radius: 8px;
   box-shadow: 0 2px 5px 0 rgba(211, 209, 238, 0.5);
+}
+
+.bookCover:hover {
+  display: block;
+  background-color: whitesmoke;
 }
 
 .bookImage {

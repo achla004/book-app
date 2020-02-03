@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import DefaultCover from "./SVG/defaultCover.png"
 import "./styles/Book.css";
-
+import Search from "./SVG/Search.svg";
 import Back from "./SVG/Back.svg";
 import { debounce } from "lodash";
 import 'bootstrap/dist/css/bootstrap.css';
+import Loading from "./SVG/Loading.gif";
 class Book extends Component {
     constructor(props) {
         super(props);
@@ -51,24 +52,26 @@ class Book extends Component {
                             })
                             .then((data2) => {
                                 this.setState({
+
                                     isLoading2: true,
                                     result1: data2,
-                                    result2: data2.result
+                                    result2: data2.results
                                 });
-
+                                console.log(this.state.result1);
+                                console.log(this.state.result2);
                                 if (this.state.isLoading2) {
 
                                     this.setState({
                                         result: this.state.result.concat(this.state.result2)
                                     });
 
-                                    console.log(this.state.result2);
+                                    console.log(this.state.result);
                                 }
                             })
                     }
                 }
             }
-        }, 1000);
+        }, 100);
     }
 
 
@@ -78,21 +81,39 @@ class Book extends Component {
 
 
     searchBook = debounce((query) => {
-        this.setState({ query }
-        );
 
-        fetch(`http://skunkworks.ignitesol.com:8000/books/?search=${this.state.query}`)
-            .then(results => {
-                return results.json();
-            }).then(data => {
-
-                this.setState({
-                    isLoading1: true,
-                    result: data.results,
+        if (query === null || query === "") {
+            fetch(`http://skunkworks.ignitesol.com:8000/books?topic=${this.props.match.params.keyword}`)
+                .then(results => {
+                    return results.json();
+                }).then(data => {
+                    console.log(data);
+                    this.setState({
+                        isLoading: true,
+                        result1: data,
+                        result: data.results,
+                        query: "",
+                    })
                 })
-                console.log(this.state.result);
 
-            });
+        } else {
+            this.setState({ query }
+            );
+
+            fetch(`http://skunkworks.ignitesol.com:8000/books/?search=${this.state.query}`)
+                .then(results => {
+                    return results.json();
+                }).then(data => {
+
+                    this.setState({
+                        isLoading1: true,
+                        result: data.results,
+                    })
+                    console.log(this.state.result);
+
+                });
+        }
+
     }, 500)
 
     bookInformation = (item) => {
@@ -139,12 +160,13 @@ class Book extends Component {
 
 
     render() {
+        console.log(this.state.result)
         const { query } = this.state;
         if (!this.state.isLoading) {
             return (
 
                 <div className="load">
-                    <p>Loading</p>
+                    <img src={Loading} alt="Loading" />
                 </div>
             )
         } else {
@@ -159,12 +181,16 @@ class Book extends Component {
 
 
                         <div className="container search"  >
+                            <button type="submit" className="searchButton">
+                                <img src={Search} alt={Search}></img>
+                            </button>
                             <input
                                 className="container searchbox"
                                 onChange={(event) => this.searchBook(event.target.value)}
                                 type="text"
                                 value={query}
                                 name="query"
+                                onfocus="this.value=''"
                                 placeholder=" search"
                             />
                         </div>
@@ -184,7 +210,7 @@ class Book extends Component {
                                                 {item.title}
                                             </div>
                                             <div className="author">
-                                                {item.authors[0].name}
+                                                {item.authors && item.authors[0] && item.authors[0].name}
                                             </div>
                                         </div>
                                     )
